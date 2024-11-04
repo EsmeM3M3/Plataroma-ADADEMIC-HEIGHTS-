@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultados del Examen</title>
+    <link rel="stylesheet" href="css/resultados.css">
+    
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-brand">Resultados del Examen</div>
+        <ul class="navbar-menu">
+            <li><a href="alumno.html">Inicio</a></li>
+            <li><a href="index.html">Cerrar Sesión</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <h1>Verifica tus Resultados</h1>
+        
+        <div class="form-group">
+            <label for="selectExamen">Seleccione un examen:</label>
+            <select id="selectExamen"></select>
+            <button id="verResultados" disabled>Ver Resultados</button>
+        </div>
+        
+        <div id="resultadosContainer" style="display:none;">
+            <h2>Resultados:</h2>
+            <div id="resultados"></div>
+            <h2 id="totalPuntos">Total de Puntos: 0</h2>
+            <h2 id="calificacion">Calificación: 0%</h2>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-app.js";
+        import { getFirestore, collection, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyARr-KlaIVM6YKaUZA0oh-Qp-nEYE7eqrE",
+            authDomain: "sistemaexamen-b85e1.firebaseapp.com",
+            projectId: "sistemaexamen-b85e1",
+            storageBucket: "sistemaexamen-b85e1.appspot.com",
+            messagingSenderId: "217856583077",
+            appId: "1:217856583077:web:dbef6aeb4726aeb320744c"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        async function cargarListaExamenes() {
+            const selectExamen = document.getElementById("selectExamen");
+            selectExamen.innerHTML = '<option value="">Seleccione un examen</option>';
+
+            const examenesRef = collection(db, "examenesRealizados");
+            const querySnapshot = await getDocs(examenesRef);
+            querySnapshot.forEach((doc) => {
+                const option = document.createElement("option");
+                option.value = doc.id;
+                option.textContent = doc.id;
+                selectExamen.appendChild(option);
+            });
+        }
+
+        async function verResultados() {
+            const examenId = document.getElementById("selectExamen").value;
+            const resultadosContainer = document.getElementById("resultadosContainer");
+            const resultadosDiv = document.getElementById("resultados");
+            const totalPuntosH2 = document.getElementById("totalPuntos");
+            const calificacionH2 = document.getElementById("calificacion");
+
+            if (examenId) {
+                const examenRef = doc(db, "examenes", examenId);
+                const examenRealizadoRef = doc(db, "examenesRealizados", examenId);
+
+                const examenSnap = await getDoc(examenRef);
+                const examenRealizadoSnap = await getDoc(examenRealizadoRef);
+
+                if (examenSnap.exists() && examenRealizadoSnap.exists()) {
+                    const preguntas = examenSnap.data().preguntas;
+                    const respuestasAlumno = examenRealizadoSnap.data().respuestas;
+
+                    resultadosDiv.innerHTML = ""; // Limpiamos cualquier resultado previo
+                    let totalPuntos = 0;
+                    let preguntasCorrectas = 0;
+
+                    preguntas.forEach((pregunta, index) => {
+                        const respuestaAlumno = respuestasAlumno[`pregunta${index}`]; // Respuesta del alumno
+                        const respuestaCorrecta = pregunta.correcta; // Respuesta correcta
+
+                        const resultado = document.createElement("div");
+                        resultado.innerHTML = `<strong>Pregunta ${index + 1}:</strong> ${pregunta.pregunta}<br>`;
+
+                        // Mostrar todas las opciones
+                        resultado.innerHTML += `<strong>Opciones:</strong><br>`;
+                        resultado.innerHTML += `a. ${pregunta.opcion1}<br>`;
+                        resultado.innerHTML += `b. ${pregunta.opcion2}<br>`;
+                        resultado.innerHTML += `c. ${pregunta.opcion3}<br>`;
+
+                        // Mostrar la respuesta del alumno y si es correcta o no
+                        const esCorrecta = respuestaAlumno === respuestaCorrecta;
+                        resultado.innerHTML += `<strong>Tu respuesta:</strong> <span class="${esCorrecta ? 'correct' : 'incorrect'}">${respuestaAlumno}</span> - ${esCorrecta ? 'Correcta' : 'Incorrecta'}<br>`;
+
+                        if (esCorrecta) {
+                            totalPuntos += 10;
+                            preguntasCorrectas++;
+                        }
+
+                        resultadosDiv.appendChild(resultado);
+                    });
+
+                    const calificacion = (preguntasCorrectas / preguntas.length) * 100;
+                    totalPuntosH2.textContent = `Total de Puntos: ${totalPuntos}`;
+                    calificacionH2.textContent = `Calificación: ${calificacion.toFixed(2)}%`;
+                    resultadosContainer.style.display = "block";
+                } else {
+                    alert("Examen o respuestas no encontrados.");
+                    resultadosContainer.style.display = "none";
+                }
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            cargarListaExamenes();
+
+            const selectExamen = document.getElementById("selectExamen");
+            const verResultadosBtn = document.getElementById("verResultados");
+
+            selectExamen.addEventListener("change", () => {
+                verResultadosBtn.disabled = selectExamen.value === "";
+            });
+
+            verResultadosBtn.addEventListener("click", verResultados);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario de Preguntas</title>
+    <link rel="stylesheet" href="css/stylesCrearExam.css">
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, doc, setDoc, getDocs } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyARr-KlaIVM6YKaUZA0oh-Qp-nEYE7eqrE",
+            authDomain: "sistemaexamen-b85e1.firebaseapp.com",
+            projectId: "sistemaexamen-b85e1",
+            storageBucket: "sistemaexamen-b85e1.appspot.com",
+            messagingSenderId: "217856583077",
+            appId: "1:217856583077:web:dbef6aeb4726aeb320744c"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        let preguntas = [];
+        let preguntaNumero = 1;
+
+        function agregarPregunta() {
+            const pregunta = document.getElementById('pregunta').value;
+            const opcion1 = document.getElementById('opcion1').value;
+            const opcion2 = document.getElementById('opcion2').value;
+            const opcion3 = document.getElementById('opcion3').value;
+            const correcta = document.querySelector('input[name="correcta"]:checked').value;
+
+            preguntas.push({
+                numero: preguntaNumero,
+                pregunta: pregunta,
+                opcion1: opcion1,
+                opcion2: opcion2,
+                opcion3: opcion3,
+                correcta: correcta
+            });
+
+            agregarFilaTabla(preguntaNumero, pregunta, opcion1, opcion2, opcion3, correcta);
+            preguntaNumero++;
+            document.getElementById('formularioPregunta').reset();
+        }
+
+        function agregarFilaTabla(numero, pregunta, opcion1, opcion2, opcion3, correcta) {
+            const tabla = document.getElementById('tablaPreguntas');
+            const fila = tabla.insertRow();
+
+            const celdaNumero = fila.insertCell(0);
+            const celdaPregunta = fila.insertCell(1);
+            const celdaOpcion1 = fila.insertCell(2);
+            const celdaOpcion2 = fila.insertCell(3);
+            const celdaOpcion3 = fila.insertCell(4);
+            const celdaCorrecta = fila.insertCell(5);
+
+            celdaNumero.innerHTML = numero;
+            celdaPregunta.innerHTML = pregunta;
+            celdaOpcion1.innerHTML = opcion1;
+            celdaOpcion2.innerHTML = opcion2;
+            celdaOpcion3.innerHTML = opcion3;
+            celdaCorrecta.innerHTML = correcta;
+        }
+
+        async function guardarExamen() {
+            const nombreExamen = document.getElementById('nombreExamen').value;
+            if (nombreExamen.trim() === "" || preguntas.length === 0) {
+                alert("Por favor, ingrese un nombre para el examen y agregue al menos una pregunta.");
+                return;
+            }
+
+            try {
+                const examenRef = doc(collection(db, "examenes"), nombreExamen);
+                await setDoc(examenRef, { preguntas: preguntas });
+                alert("Examen guardado con éxito");
+                preguntas = []; // Limpia las preguntas guardadas temporalmente
+                document.getElementById('tablaPreguntas').innerHTML = `
+                    <tr>
+                        <th>#</th>
+                        <th>Pregunta</th>
+                        <th>Opción a</th>
+                        <th>Opción b</th>
+                        <th>Opción c</th>
+                        <th>Opción Correcta</th>
+                    </tr>
+                `;
+                preguntaNumero = 1;
+                document.getElementById('nombreExamen').value = ""; // Limpia el nombre del examen
+            } catch (e) {
+                console.error("Error al guardar el examen: ", e);
+            }
+        }
+
+        // Hacer accesibles las funciones en el ámbito global
+        window.agregarPregunta = agregarPregunta;
+        window.guardarExamen = guardarExamen;
+    </script>
+</head>
+<body>
+    <div class="navbar">
+        <div class="navbar-brand">Examen</div>
+        <ul class="navbar-menu">
+            <li><a href="maestro.html">Menu</a></li>
+            <li><a href="index.html">Cerrar Sesión</a></li>
+        </ul>
+    </div>
+
+    <br>
+    <h1>Formular Preguntas</h1>
+    <label for="nombreExamen">Nombre del Examen:</label>
+    <input type="text" id="nombreExamen" placeholder="Escribe el nombre del examen"><br><br>
+
+    <form id="formularioPregunta">
+        <label for="pregunta">Pregunta:</label>
+        <input type="text" id="pregunta" placeholder="Escribe la pregunta aquí"><br>
+
+        <label for="opcion1">Opción a:</label>
+        <input type="text" id="opcion1" placeholder="Escribe la opción a">
+        <input type="radio" name="correcta" value="a">
+        <label>Correcta</label><br>
+
+        <label for="opcion2">Opción b:</label>
+        <input type="text" id="opcion2" placeholder="Escribe la opción b">
+        <input type="radio" name="correcta" value="b">
+        <label>Correcta</label><br>
+
+        <label for="opcion3">Opción c:</label>
+        <input type="text" id="opcion3" placeholder="Escribe la opción c">
+        <input type="radio" name="correcta" value="c">
+        <label>Correcta</label><br>
+
+        <button type="button" onclick="agregarPregunta()">Agregar Pregunta</button>
+    </form>
+
+    <br><br>
+    <button type="button" onclick="guardarExamen()">Guardar Examen</button>
+
+    <h2>Preguntas Registradas</h2>
+    <table id="tablaPreguntas">
+        <tr>
+            <th>#</th>
+            <th>Pregunta</th>
+            <th>Opción a</th>
+            <th>Opción b</th>
+            <th>Opción c</th>
+            <th>Opción Correcta</th>
+        </tr>
+    </table>
+</body>
+</html>

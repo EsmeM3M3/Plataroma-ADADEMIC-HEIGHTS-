@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responder Examen</title>
+    <link rel="stylesheet" href="css/hacerExam.css">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="navbar-brand">Responder Exámenes</div>
+        <ul class="navbar-menu">
+            <li><a href="alumno.html">Inicio</a></li>
+            <li><a href="index.html">Cerrar Sesión</a></li>
+        </ul>
+    </nav>
+
+    <h1>Selecciona un Examen para Responder</h1>
+    <div class="container">
+        <label for="selectExamen">Seleccione un examen:</label>
+        <select id="selectExamen"></select>
+        <div id="examenContainer" style="display:none;">
+            <form id="examenForm"></form>
+            <button id="enviarExamen" style="display:none;">Enviar Respuestas</button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-app.js";
+        import { getFirestore, collection, getDocs, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyARr-KlaIVM6YKaUZA0oh-Qp-nEYE7eqrE",
+            authDomain: "sistemaexamen-b85e1.firebaseapp.com",
+            projectId: "sistemaexamen-b85e1",
+            storageBucket: "sistemaexamen-b85e1.appspot.com",
+            messagingSenderId: "217856583077",
+            appId: "1:217856583077:web:dbef6aeb4726aeb320744c"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Cargar lista de exámenes
+        async function cargarListaExamenes() {
+            const selectExamen = document.getElementById("selectExamen");
+            selectExamen.innerHTML = '<option value="">Seleccione un examen</option>';
+
+            const examenesRef = collection(db, "examenes");
+            const querySnapshot = await getDocs(examenesRef);
+            querySnapshot.forEach((doc) => {
+                const option = document.createElement("option");
+                option.value = doc.id;
+                option.textContent = doc.id;
+                selectExamen.appendChild(option);
+            });
+        }
+
+        // Mostrar preguntas del examen seleccionado
+        async function mostrarExamen() {
+            const examenId = document.getElementById("selectExamen").value;
+            const examenForm = document.getElementById("examenForm");
+            const examenContainer = document.getElementById("examenContainer");
+            const enviarExamenBtn = document.getElementById("enviarExamen");
+
+            if (examenId) {
+                examenContainer.style.display = "block";
+                examenForm.innerHTML = "";
+
+                const examenRef = doc(db, "examenes", examenId);
+                const examenSnap = await getDoc(examenRef);
+
+                if (examenSnap.exists()) {
+                    const examenData = examenSnap.data();
+                    const preguntas = examenData.preguntas;
+
+                    preguntas.forEach((pregunta, index) => {
+                        const preguntaDiv = document.createElement("div");
+                        preguntaDiv.classList.add("pregunta");
+                        preguntaDiv.innerHTML = `
+        <p>Pregunta ${index + 1}: ${pregunta.pregunta}</p>
+        <label><input type="radio" name="pregunta${index}" value="a"> a) ${pregunta.opcion1}</label><br>
+        <label><input type="radio" name="pregunta${index}" value="b"> b) ${pregunta.opcion2}</label><br>
+        <label><input type="radio" name="pregunta${index}" value="c"> c) ${pregunta.opcion3}</label><br>
+    `;
+                        examenForm.appendChild(preguntaDiv);
+                    });
+
+
+                    enviarExamenBtn.style.display = "block";
+                } else {
+                    examenContainer.style.display = "none";
+                    enviarExamenBtn.style.display = "none";
+                    alert("Examen no encontrado.");
+                }
+            } else {
+                examenContainer.style.display = "none";
+                enviarExamenBtn.style.display = "none";
+            }
+        }
+
+        // Enviar respuestas del examen a Firestore
+        async function enviarRespuestas() {
+            const examenId = document.getElementById("selectExamen").value;
+            const examenForm = document.getElementById("examenForm");
+            const respuestas = {};
+
+            Array.from(examenForm.elements).forEach((element) => {
+                if (element.type === "radio" && element.checked) {
+                    respuestas[element.name] = element.value;
+                }
+            });
+
+            if (Object.keys(respuestas).length === 0) {
+                alert("Por favor, responde al menos una pregunta.");
+                return;
+            }
+
+            try {
+                await setDoc(doc(db, "examenesRealizados", examenId), { respuestas });
+                alert("Respuestas enviadas correctamente.");
+                examenForm.reset();
+                document.getElementById("examenContainer").style.display = "none";
+                document.getElementById("enviarExamen").style.display = "none";
+            } catch (error) {
+                console.error("Error al enviar respuestas:", error);
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            cargarListaExamenes();
+
+            document.getElementById("selectExamen").addEventListener("change", mostrarExamen);
+            document.getElementById("enviarExamen").addEventListener("click", enviarRespuestas);
+        });
+    </script>
+</body>
+
+</html>

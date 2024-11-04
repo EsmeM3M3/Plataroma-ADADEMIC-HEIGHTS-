@@ -1,0 +1,113 @@
+/* Fondo oscuro para toda la página */
+body {
+    background-color: #121212;
+    color: #ffffff;
+    font-family: Arial, sans-serif;
+    margin: 0px;
+    padding: 0;
+}
+
+/* Barra de navegación */
+/* Navbar */
+.navbar {
+    display: flex;
+    justify-content: space-between; /* Distribuye el espacio entre los elementos de los lados */
+    align-items: center; /* Centra verticalmente */
+    background-color: #008080; /* Fondo turquesa */
+    padding: 0rem;
+}
+
+.navbar-brand {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #ffffff;
+    margin-left: 1rem;
+}
+
+.navbar-menu {
+    display: flex;
+    gap: 1.5rem; /* Espacio entre "Menu" y "Cerrar Sesión" */
+    list-style: none;
+    margin-right: 1rem;
+}
+
+.navbar-menu li {
+    display: inline;
+}
+
+.navbar-menu a {
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1rem;
+}
+
+/* Encabezados */
+h1, h2 {
+    color: #008080;
+    text-align: center;
+}
+
+/* Inputs y botones */
+input[type="text"], button, select {
+    background-color: #333333;
+    color: #ffffff;
+    border: 1px solid #008080;
+    padding: 10px;
+    border-radius: 5px;
+    margin: 5px 0;
+    width: 100%;
+}
+
+input[type="text"]:focus, select:focus, button:focus {
+    outline: none;
+    border-color: #008080;
+}
+
+button {
+    background-color: #008080;
+    cursor: pointer;
+    width: auto;
+    padding: 10px 20px;
+    margin: 10px 0;
+}
+
+button:hover {
+    background-color: #008080;
+}
+
+/* Tabla de preguntas */
+#tablaPreguntas {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #222222;
+    margin: 20px 0;
+}
+
+#tablaPreguntas th, #tablaPreguntas td {
+    border: 1px solid #00bfa6;
+    padding: 10px;
+    text-align: center;
+    color: #ffffff;
+}
+
+#tablaPreguntas th {
+    background-color: #006d77;
+    color: #ffffff;
+}
+
+#tablaPreguntas input[type="text"], #tablaPreguntas select {
+    width: 90%;
+    padding: 5px;
+    color: #ffffff;
+    background-color: #333333;
+    border: 1px solid #00bfa6;
+    border-radius: 5px;
+}
+
+/* Contenedor principal */
+.container {
+    max-width: 800px;
+    margin: auto;
+    padding: 20px;
+}

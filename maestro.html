@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InicioMaestro</title>
+    <link rel="stylesheet" href="css/stylesMaestro.css">
+</head>
+<body>
+    <!-- Barra de navegación -->
+    <nav class="navbar">
+        <div class="navbar-brand">Panel de Maestro</div>
+        <ul class="navbar-menu">
+            <li><a href="index.html">Cerrar Sesión</a></li>
+        </ul>
+    </nav>
+
+    <!-- Contenido principal -->
+    <div class="main-content">
+        <h1>BIENVENIDO</h1>      
+        <div class="dashboard-sections">
+            <section>
+                <h2>perfil Docente</h2>
+                <button onclick="location.href='datosmaestro.html'">
+                    <img class="perfilDocente" src="fotos/resume.png" alt="perfilDocente">
+                </button>
+            </section>
+            
+            <section>
+                <h2>Crear Examen</h2>
+                <button onclick="location.href='crearexamen.html'">
+                    <img class="crearExam" src="fotos/exam.png" alt="icono de crear examen">
+                </button>
+            </section>
+            
+            <section>
+                <h2>Modificar Examen</h2>
+                <button onclick="location.href='modificarexamen.html'">
+                    <img class="modificarExam" src="fotos/noticias-falsas.png" alt="icono de modificar examen">
+                </button>
+            </section>
+
+            <section>
+                <h2>Ver Exámenes</h2>
+                <button onclick="location.href='verexamenes.html'">
+                   <img class="verExam" src="fotos/examen-de-ojos.png" alt="icono de ver examenes"> 
+                   <!--<img class="imprimirExam" src="fotos/impresora.png" alt="icono de imprimir examen">-->
+                </button>
+            </section>
+
+            <section>
+                <h2>Imprimir Examen</h2>
+                <button onclick="location.href='imprimirexamen.html'">
+                    <img class="imprimirExam" src="fotos/impresora.png" alt="icono de imprimir examen">
+                </button>
+            </section>
+            
+            <section>
+                <h2>Resultados</h2>
+                <button onclick="location.href='resultadosexamenes.html'">
+                    <img class="resultadosExam" src="fotos/prueba.png" alt="icono de ver resultados">
+                </button>
+            </section>
+        </div>
+    </div>
+
+    <script>
+        // Función para alternar la visibilidad del contenido desplegable
+        function toggleDropdown(event) {
+            event.preventDefault();
+            const dropdownContent = event.target.nextElementSibling;
+            dropdownContent.style.display = dropdownContent.style.display === 'block' ? 'none' : 'block';
+        }
+    </script>
+</body>
+</html>

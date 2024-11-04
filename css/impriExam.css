@@ -1,0 +1,147 @@
+body {
+    background-color: #1a1a1a;
+    color: #008080;
+    font-family: Arial, sans-serif;
+    padding: auto;
+    margin: 0;
+}
+
+/* Barra de navegación */
+.navbar {
+    display: flex;
+    justify-content: space-between; /* Distribuye el espacio entre los elementos de los lados */
+    align-items: center; /* Centra verticalmente */
+    background-color: #008080; /* Fondo turquesa */
+    padding: 0rem;
+}
+
+.navbar-brand {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #ffffff;
+    margin-left: 1rem;
+}
+
+.navbar-menu {
+    display: flex;
+    gap: 1.5rem; /* Espacio entre "Menu" y "Cerrar Sesión" */
+    list-style: none;
+    margin-right: 1rem;
+}
+
+.navbar-menu li {
+    display: inline;
+}
+
+.navbar-menu a {
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1rem;
+}
+
+/* Estilos del contenido */
+h1 {
+    color: #008080;
+    text-align: center;
+}
+
+#examenSelect {
+    padding: 10px;
+    font-size: 1em;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 100%;
+    max-width: 300px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: #333;
+    color: #e0e0e0;
+}
+
+#cargarExamen {
+    padding: 10px 20px;
+    font-size: 1em;
+    border: none;
+    border-radius: 5px;
+    background-color: #008080;
+    color: #1a1a1a;
+    cursor: pointer;
+    float: right;
+}
+
+#cuestionario {
+    margin-top: 20px;
+    background-color: #333;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    max-width: 700px;
+    color: #e0e0e0;
+    float: left;
+    clear: both;
+}
+
+.pregunta {
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid #555;
+    border-radius: 5px;
+    background-color: #2a2a2a;
+}
+
+.pregunta p {
+    margin: 0;
+    font-weight: bold;
+    color: #008080;
+}
+
+label {
+    display: block;
+    margin: 5px 0;
+    font-size: 0.9em;
+}
+
+input[type="text"] {
+    width: calc(100% - 20px);
+    padding: 8px;
+    margin-top: 5px;
+    border: 1px solid #555;
+    border-radius: 5px;
+    background-color: #333;
+    color: #e0e0e0;
+}
+
+#tituloExamen {
+    text-align: center;
+    font-size: 1.5em;
+    color: #008080;
+    margin-top: 20px;
+    height: 10px;
+    width: 36%;
+}
+
+.container {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+}
+
+/* Columna izquierda */
+.left-panel {
+    width: 50%;
+    height: 800px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+    padding: auto;
+    margin: auto;
+}
+
+.selectExamen, #imprimirExamen{
+    height: 30px;
+    background-color:  #008080;
+}

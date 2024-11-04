@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil</title>
+    <link rel="stylesheet" href="css/stylesPerfilMaestro.css">
+    <!-- Añadir Firebase SDK -->
+    <script type="module">
+        // Importar las funciones necesarias de Firebase
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-app.js";
+        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-firestore.js";
+
+        // Tu configuración de Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyARr-KlaIVM6YKaUZA0oh-Qp-nEYE7eqrE",
+            authDomain: "sistemaexamen-b85e1.firebaseapp.com",
+            projectId: "sistemaexamen-b85e1",
+            storageBucket: "sistemaexamen-b85e1.appspot.com",
+            messagingSenderId: "217856583077",
+            appId: "1:217856583077:web:dbef6aeb4726aeb320744c"
+        };
+
+        // Inicializar Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Guardar datos en Firestore
+        window.guardarDatos = async function() {
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            const username = document.getElementById('username').value;
+
+            try {
+                await addDoc(collection(db, "profesores"), {
+                    nombre: name,
+                    correo: email,
+                    telefono: phone,
+                    nombreUsuario: username,
+                });
+                alert("Datos guardados correctamente.");
+                // Limpiar los campos después de guardar
+                document.getElementById('teacher-form').reset();
+                document.getElementById('username').value = '';
+            } catch (error) {
+                console.error("Error al guardar los datos: ", error);
+                alert("Ocurrió un error al guardar los datos. Verifica la consola para más detalles.");
+            }
+        }
+
+        window.cancelar = function() {
+            window.location.href = 'index.html'; // Cambia 'index.html' por la ruta que desees
+        }
+
+        window.guardarPerfil = function() {
+            const username = document.getElementById('username').value;
+            const existingUsernames = ['usuario1', 'usuario2']; // Simulación de usuarios existentes
+
+            if (existingUsernames.includes(username)) {
+                document.getElementById('username-error').style.display = 'block';
+            } else {
+                document.getElementById('username-error').style.display = 'none';
+                guardarDatos(); // Llamar a la función para guardar en Firebase
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="navbar">
+        <div class="navbar-brand">Perfil</div>
+        <ul class="navbar-menu">
+            <li><a href="maestro.html">Menu</a></li>
+            <li><a href="index.html">Cerrar Sesión</a></li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <h1>Información Personal</h1>
+
+        <div class="container">
+            <div class="teacher-container">
+                <form id="teacher-form">
+                    <label for="name">Nombre:</label>
+                    <input type="text" id="name" name="name" placeholder="Ingrese su nombre" required>
+
+                    <label for="email">Correo Electrónico:</label>
+                    <input type="email" id="email" name="email" placeholder="Ingrese su correo" required>
+
+                    <label for="phone">Teléfono:</label>
+                    <input type="text" id="phone" name="phone" placeholder="Ingrese su teléfono" required>
+
+                    <div class="button-group">
+                        <button type="button" onclick="guardarDatos()">Guardar Cambios</button>
+                        <button type="button" onclick="cancelar()">Cancelar</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="profile-container">
+                <h2>Perfil de Usuario</h2>
+                <div class="profile-section">
+                    <label for="username">Nombre de Usuario:</label>
+                    <input type="text" id="username" name="username" placeholder="Ingrese su nombre de usuario" required>
+                    <span id="username-error" class="error-message" style="display:none;">El nombre de usuario ya está registrado.</span>
+
+                    <label for="password">Cambiar Contraseña:</label>
+                    <input type="password" id="password" name="password" placeholder="Ingrese nueva contraseña">
+
+                    <div class="button-group">
+                        <button type="button" onclick="guardarPerfil()">Guardar Perfil</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

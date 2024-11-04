@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Examen</title>
+    <link rel="stylesheet" href="css/modiExam.css">
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-app.js";
+        import { getFirestore, collection, doc, getDoc, getDocs, setDoc } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyARr-KlaIVM6YKaUZA0oh-Qp-nEYE7eqrE",
+            authDomain: "sistemaexamen-b85e1.firebaseapp.com",
+            projectId: "sistemaexamen-b85e1",
+            storageBucket: "sistemaexamen-b85e1.appspot.com",
+            messagingSenderId: "217856583077",
+            appId: "1:217856583077:web:dbef6aeb4726aeb320744c"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        let preguntas = [];
+        let nombreExamen = "";
+
+        async function cargarListaExamenes() {
+            const examenesRef = collection(db, "examenes");
+            const querySnapshot = await getDocs(examenesRef);
+            const selectExamen = document.getElementById("selectExamen");
+            
+            selectExamen.innerHTML = '<option value="">Seleccione un examen</option>';
+            querySnapshot.forEach((doc) => {
+                const option = document.createElement("option");
+                option.value = doc.id;
+                option.textContent = doc.id;
+                selectExamen.appendChild(option);
+            });
+        }
+
+        async function cargarExamen() {
+            nombreExamen = document.getElementById('selectExamen').value;
+            if (nombreExamen === "") {
+                alert("Por favor, seleccione un examen.");
+                return;
+            }
+
+            const examenRef = doc(collection(db, "examenes"), nombreExamen);
+            const docSnap = await getDoc(examenRef);
+
+            if (docSnap.exists()) {
+                preguntas = docSnap.data().preguntas;
+                mostrarPreguntas();
+            } else {
+                alert("El examen no existe.");
+            }
+        }
+
+        function mostrarPreguntas() {
+            const tabla = document.getElementById('tablaPreguntas');
+            tabla.innerHTML = `
+                <tr>
+                    <th>#</th>
+                    <th>Pregunta</th>
+                    <th>Opción a</th>
+                    <th>Opción b</th>
+                    <th>Opción c</th>
+                    <th>Opción Correcta</th>
+                    <th>Acciones</th>
+                </tr>
+            `;
+
+            preguntas.forEach((pregunta, index) => {
+                const fila = tabla.insertRow();
+                fila.insertCell(0).textContent = pregunta.numero;
+                fila.insertCell(1).innerHTML = `<input type="text" value="${pregunta.pregunta}" onchange="actualizarPregunta(${index}, 'pregunta', this.value)">`;
+                fila.insertCell(2).innerHTML = `<input type="text" value="${pregunta.opcion1}" onchange="actualizarPregunta(${index}, 'opcion1', this.value)">`;
+                fila.insertCell(3).innerHTML = `<input type="text" value="${pregunta.opcion2}" onchange="actualizarPregunta(${index}, 'opcion2', this.value)">`;
+                fila.insertCell(4).innerHTML = `<input type="text" value="${pregunta.opcion3}" onchange="actualizarPregunta(${index}, 'opcion3', this.value)">`;
+                
+                const correctaSelect = document.createElement("select");
+                ["a", "b", "c"].forEach(opcion => {
+                    const optionElement = document.createElement("option");
+                    optionElement.value = opcion;
+                    optionElement.textContent = opcion;
+                    if (pregunta.correcta === opcion) optionElement.selected = true;
+                    correctaSelect.appendChild(optionElement);
+                });
+                correctaSelect.onchange = () => actualizarPregunta(index, "correcta", correctaSelect.value);
+                fila.insertCell(5).appendChild(correctaSelect);
+                
+                fila.insertCell(6).innerHTML = `<button onclick="eliminarPregunta(${index})">Eliminar</button>`;
+            });
+        }
+
+        function actualizarPregunta(index, campo, valor) {
+            preguntas[index][campo] = valor;
+        }
+
+        function eliminarPregunta(index) {
+            preguntas.splice(index, 1);
+            mostrarPreguntas();
+        }
+
+        async function guardarExamen() {
+            if (preguntas.length === 0) {
+                alert("No hay preguntas para guardar.");
+                return;
+            }
+
+            try {
+                const examenRef = doc(collection(db, "examenes"), nombreExamen);
+                await setDoc(examenRef, { preguntas: preguntas });
+                alert("Examen actualizado con éxito.");
+            } catch (e) {
+                console.error("Error al guardar el examen: ", e);
+            }
+        }
+
+        window.cargarExamen = cargarExamen;
+        window.guardarExamen = guardarExamen;
+        window.actualizarPregunta = actualizarPregunta;
+        window.eliminarPregunta = eliminarPregunta;
+
+        window.onload = cargarListaExamenes;
+    </script>
+</head>
+<body>
+    <div class="navbar">
+        <div class="navbar-brand">Editar Examen</div>
+        <ul class="navbar-menu">
+            <li><a href="maestro.html">Menu</a></li>
+            <li><a href="index.html">Cerrar Sesión</a></li>
+        </ul>
+    </div>
+
+    <br>
+    <h1>Editar Examen</h1>
+    <label for="selectExamen">Seleccione el Examen:</label>
+    <select id="selectExamen"></select>
+    <button type="button" onclick="cargarExamen()">Cargar Examen</button>
+
+    <h2>Preguntas Registradas</h2>
+    <table id="tablaPreguntas" style="width: 100%; color: #ffffff; background-color: #003366;">
+        <tr>
+            <th>#</th>
+            <th>Pregunta</th>
+            <th>Opción a</th>
+            <th>Opción b</th>
+            <th>Opción c</th>
+            <th>Opción Correcta</th>
+            <th>Acciones</th>
+        </tr>
+    </table>
+
+    <br>
+    <button type="button" onclick="guardarExamen()">Guardar Cambios</button>
+</body>
+</html>

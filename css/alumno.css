@@ -1,0 +1,93 @@
+/* stylesMaestro.css */
+
+/* Reset de estilos por defecto */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #1c1c1c; /* Fondo oscuro */
+    color: #ffffff; /* Texto blanco */
+}
+
+.navbar {
+    background-color: #008080; /* Color turquesa suave */
+    padding: 1rem;
+}
+
+.navbar-brand {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #ffffff;
+}
+
+.navbar-menu {
+    list-style: none;
+}
+
+.navbar-menu li {
+    display: inline;
+    margin-left: 20px;
+}
+
+.navbar-menu a {
+    color: #ffffff;
+    text-decoration: none;
+}
+
+.main-content {
+    padding: 20px;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.dashboard-sections {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+
+section {
+    background-color: #2e2e2e; /* Sección con un fondo más claro que el cuerpo */
+    border-radius: 8px;
+    padding: 15px;
+    margin: 10px;
+    width: 200px; /* Ancho fijo para cada sección */
+    text-align: center;
+}
+
+h2 {
+    color: #008080; /* Títulos en color turquesa */
+    margin-bottom: 10px;
+}
+
+button {
+    background-color: transparent; /* Botón transparente */
+    border: none;
+    cursor: pointer;
+}
+
+button img {
+    width: 50px; /* Ajusta el tamaño del icono */
+    height: auto;
+}
+
+/*estilo de iconos*/
+.perfilAlumno{
+    width: 100px;
+    height: 100px;
+}
+.hacerExam{
+    width: 100px;
+    height: 100px;
+}
+.resultadosExam{
+    width: 110px;
+    height: 110px;
+}

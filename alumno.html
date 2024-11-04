@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InicioAlumno</title>
+    <link rel="stylesheet" href="css/alumno.css">
+</head>
+<body>
+    <!-- Barra de navegación -->
+    <nav class="navbar">
+        <div class="navbar-brand">Panel de Alumno</div>
+        <ul class="navbar-menu">
+            <li><a href="index.html">Cerrar Sesión</a></li>
+        </ul>
+    </nav>
+
+    <!-- Contenido principal -->
+    <div class="main-content">
+        <h1>BIENVENIDO</h1>      
+        <div class="dashboard-sections">
+            <section>
+                <h2>Perfil</h2>
+                <button onclick="location.href='datosalumno.html'">
+                    <img class="perfilAlumno" src="fotos/usuario.png" alt="perfil del Alumno">
+                </button>
+            </section>
+
+            <section>
+                <h2>Hacer Exámenes</h2>
+                <button onclick="location.href='hacerexam.html'">
+                   <img class="hacerExam" src="fotos/estudiar.png" alt="icono de ver examenes"> 
+                </button>
+            </section>
+
+            <section>
+                <h2>Resultados</h2>
+                <button onclick="location.href='resultadoA.html'">
+                    <img class="resultadosExam" src="fotos/prueba.png" alt="icono de ver resultados">
+                </button>
+            </section>
+        </div>
+    </div>
+
+    <script>
+        // Función para alternar la visibilidad del contenido desplegable
+        function toggleDropdown(event) {
+            event.preventDefault();
+            const dropdownContent = event.target.nextElementSibling;
+            dropdownContent.style.display = dropdownContent.style.display === 'block' ? 'none' : 'block';
+        }
+    </script>
+</body>
+</html>

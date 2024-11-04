@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Login - Estilo Personalizado</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-form">
+            <form id="login-form">
+                <h1>Login</h1>
+                <label for="userType">Tipo de usuario:</label>
+                <select id="userType" name="userType">
+                    <option value="maestro">Maestro</option>
+                    <option value="alumno">Alumno</option>
+                </select><br>
+
+                <label for="username">Nombre de usuario:</label>
+                <input type="text" id="username" required><br>
+
+                <label for="password">Contraseña:</label>
+                <input type="password" id="password" required><br>
+
+                <button type="submit">Iniciar sesión</button>
+                <button type="button" id="open-register-modal">Registrar Nuevo Usuario</button>
+            </form>
+        </div>
+        <div class="welcome-section">
+            <h2>Bienvenido <br>ADADEMIC HEIGHTS</h2>
+            <p>Esta plataforma ha sido diseñada para interactuar de manera efectiva y práctica.</p>
+        </div>
+    </div>
+
+    <!-- Modal de registro -->
+    <div id="register-modal" class="modal">
+        <div class="modal-content">
+            <span id="close-modal" class="close">&times;</span>
+            <h2>Registrar Nuevo Usuario</h2>
+            <form id="register-form">
+                <label for="registerUserType">Tipo de usuario:</label>
+                <select id="registerUserType">
+                    <option value="maestro">Maestro</option>
+                    <option value="alumno">Alumno</option>
+                </select><br>
+
+                <label for="registerUsername">Nombre de usuario:</label>
+                <input type="text" id="registerUsername" required><br>
+
+                <label for="registerPassword">Contraseña:</label>
+                <input type="password" id="registerPassword" required><br>
+
+                <button type="submit">Registrar</button>
+            </form>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+        import { getDatabase, ref, set, push, get, child } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyARr-KlaIVM6YKaUZA0oh-Qp-nEYE7eqrE",
+            authDomain: "sistemaexamen-b85e1.firebaseapp.com",
+            projectId: "sistemaexamen-b85e1",
+            storageBucket: "sistemaexamen-b85e1.appspot.com",
+            messagingSenderId: "217856583077",
+            appId: "1:217856583077:web:dbef6aeb4726aeb320744c"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+
+        // Referencias a los elementos del DOM
+        const loginForm = document.getElementById("login-form");
+        const registerModal = document.getElementById("register-modal");
+        const openRegisterModalBtn = document.getElementById("open-register-modal");
+        const closeModalBtn = document.getElementById("close-modal");
+        const registerForm = document.getElementById("register-form");
+
+        // Abrir y cerrar modal de registro
+        openRegisterModalBtn.addEventListener("click", () => registerModal.style.display = "block");
+        closeModalBtn.addEventListener("click", () => registerModal.style.display = "none");
+
+        // Registrar nuevo usuario
+        registerForm.addEventListener("submit", async function (event) {
+            event.preventDefault();
+
+            const registerUsername = document.getElementById("registerUsername").value;
+            const registerPassword = document.getElementById("registerPassword").value;
+            const registerUserType = document.getElementById("registerUserType").value;
+
+            const dbRef = ref(database);
+            const snapshot = await get(child(dbRef, `usuarios`));
+            let usuarioExistente = false;
+
+            if (snapshot.exists()) {
+                const usuarios = snapshot.val();
+                for (let id in usuarios) {
+                    if (usuarios[id].username === registerUsername) {
+                        usuarioExistente = true;
+                        alert("El nombre de usuario ya está en uso.");
+                        break;
+                    }
+                }
+            }
+
+            if (!usuarioExistente) {
+                const nuevaReferencia = push(ref(database, 'usuarios'));
+                set(nuevaReferencia, {
+                    username: registerUsername,
+                    password: btoa(registerPassword),
+                    userType: registerUserType
+                }).then(() => {
+                    console.log("Usuario registrado correctamente en Firebase");
+                    registerModal.style.display = "none";
+                }).catch((error) => console.error("Error al registrar el usuario: ", error));
+            }
+        });
+
+        // Iniciar sesión
+        loginForm.addEventListener("submit", async function (event) {
+            event.preventDefault();
+
+            const username = document.getElementById("username").value;
+            const password = btoa(document.getElementById("password").value); // Encriptar para comparar
+
+            console.log("Intentando iniciar sesión con:", username, password); // Log para ver qué se envía
+
+            const dbRef = ref(database);
+            const snapshot = await get(child(dbRef, `usuarios`));
+            if (snapshot.exists()) {
+                let usuarios = snapshot.val();
+                let usuarioEncontrado = false;
+
+                for (let id in usuarios) {
+                    console.log("Comparando con usuario:", usuarios[id].username, usuarios[id].password);
+                    if (usuarios[id].username === username && usuarios[id].password === password) {
+                        usuarioEncontrado = true;
+                        const userType = usuarios[id].userType;
+
+                        console.log("Usuario encontrado. Tipo de usuario:", userType);
+                        
+                        // Redirigir basándose en el tipo de usuario
+                        if (userType === "maestro") {
+                            window.location.href = "maestro.html";  // Vista para maestros
+                        } else if (userType === "alumno") {
+                            window.location.href = "alumno.html";   // Vista para alumnos
+                        }
+                        break;
+                    }
+                }
+
+                if (!usuarioEncontrado) {
+                    alert("Nombre de usuario o contraseña incorrectos");
+                }
+            } else {
+                console.log("No se encontraron usuarios en la base de datos");
+            }
+        });
+
+    </script>
+</body>
+</html>

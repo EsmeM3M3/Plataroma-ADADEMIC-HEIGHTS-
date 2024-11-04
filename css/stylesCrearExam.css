@@ -1,0 +1,146 @@
+/* Reset de estilos por defecto */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #1c1c1c; /* Fondo oscuro */
+    color: #ffffff; /* Texto blanco */
+    margin: 0px;
+}
+
+h1 {
+    color: #008080; /* Títulos en color turquesa */
+    text-align: center;
+}
+
+h2 {
+    color: #008080; /* Títulos en color turquesa */
+}
+
+/* Navbar */
+.navbar {
+    display: flex;
+    justify-content: space-between; /* Distribuye el espacio entre los elementos de los lados */
+    align-items: center; /* Centra verticalmente */
+    background-color: #008080; /* Fondo turquesa */
+    padding: 1rem;
+}
+
+.navbar-brand {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #ffffff;
+    margin-left: 1rem;
+}
+
+.navbar-menu {
+    display: flex;
+    gap: 1.5rem; /* Espacio entre "Menu" y "Cerrar Sesión" */
+    list-style: none;
+    margin-right: 1rem;
+}
+
+.navbar-menu li {
+    display: inline;
+}
+
+.navbar-menu a {
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1rem;
+}
+
+
+/* Formulario */
+form {
+    background-color: #2e2e2e; /* Fondo del formulario en tono oscuro */
+    padding: 20px;
+    border-radius: 8px;
+    margin: 5px auto;
+    max-width: 1000px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+label {
+    display: block;
+    margin: 10px 0 5px;
+    font-weight: bold;
+    color: #ffffff; /* Texto blanco */
+}
+
+input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #008080; /* Borde en color turquesa */
+    border-radius: 5px;
+    background-color: #3b3b3b; /* Fondo de entrada más claro */
+    color: #ffffff; /* Texto blanco */
+}
+
+input[type="radio"] {
+    margin-right: 10px;
+}
+
+button {
+    width: 100%;
+    padding: 10px 15px;
+    background-color: #008080; /* Color turquesa */
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #006666; /* Turquesa más oscuro al pasar el mouse */
+}
+
+/* Tabla */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background-color: #2e2e2e; /* Fondo de la tabla */
+    color: #ffffff;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+th, td {
+    padding: 15px;
+    text-align: left;
+    border: 1px solid #008080; /* Borde turquesa */
+}
+
+th {
+    background-color: #008080; /* Fondo de encabezado en turquesa */
+    color: #ffffff;
+}
+
+td {
+    background-color: #3b3b3b; /* Fondo oscuro para celdas */
+}
+
+tr:hover {
+    background-color: #444444; /* Color más claro al pasar el mouse */
+}
+
+.guardar {
+    width: 700px;
+    height: 100px;
+    text-align: center;
+    padding-left: 600px;
+}
+
+.nomExam{
+    width: 1000px;
+    height: 100px;
+    text-align: center;
+    padding-left: 300px;
+}
